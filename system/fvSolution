@@ -1,0 +1,92 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        solver          GAMG;
+        smoother        GaussSeidel;
+        tolerance       1e-6;
+        relTol          0.01;
+        nPreSweeps      0;
+        nPostSweeps     2;
+        minIter			3;
+        maxIter			100;
+    }
+
+
+    U
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-6;
+        relTol          0.1;
+        nSweeps         1;
+        minIter			3;
+        maxIter			100;
+    }
+
+    k
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-5;
+        relTol          0.1;
+        nSweeps         1;
+    }
+
+    omega
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-5;
+        relTol          0.1;
+        nSweeps         1;
+    }
+}
+
+SIMPLE
+{
+    nNonOrthogonalCorrectors 1;
+    nCorrector				3;
+    consistent yes;
+    
+    residualControl
+    {
+        p               1e-5;
+        U               1e-5;
+        "(k|omega|f|v2)" 1e-5;
+    }
+}
+
+relaxationFactors
+{
+    equations
+    {	
+    	p				0.3;
+        U               0.7;
+        k               0.7;
+        omega           0.7;
+    }
+}
+
+cache
+{
+    grad(U);
+}
+
+// ************************************************************************* //
